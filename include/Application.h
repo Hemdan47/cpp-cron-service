@@ -1,7 +1,7 @@
 #pragma once
 #include <memory>
 #include <crow.h>
-#include "domain/IJobRepository.h"
+#include "repository/IJobRepository.h"
 
 class Application {
 public:

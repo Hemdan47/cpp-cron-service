@@ -1,11 +1,21 @@
 #include <iostream>
+#include <optional>
 #include <repository/SQliteRepository.h>
 #include "SQLiteCpp/Database.h"
 
 SQliteRepository::SQliteRepository() {
     try {
-        SQLite::Database    db("job.db3", SQLite::OPEN_READWRITE|SQLite::OPEN_CREATE);
-        db.exec(R"(
+        this->db = std::make_unique<SQLite::Database>("job.db3", SQLite::OPEN_READWRITE|SQLite::OPEN_CREATE);
+        this->initialize_schema();
+
+    }
+    catch (std::exception& e) {
+        std::cout << "exception: " << e.what() << std::endl;
+    }
+}
+
+void SQliteRepository::initialize_schema() const{
+    db->exec(R"(
             CREATE TABLE IF NOT EXISTS jobs (
                 id               TEXT PRIMARY KEY,
                 name             TEXT NOT NULL,
@@ -16,11 +26,28 @@ SQliteRepository::SQliteRepository() {
                 schedule_payload TEXT
             )
         )");
-
-    }
-    catch (std::exception& e) {
-        std::cout << "exception: " << e.what() << std::endl;
-    }
 }
 
+void SQliteRepository::save_job(const JobData& data) {
 
+}
+
+void SQliteRepository::update_job(const JobData& data) {
+
+}
+
+void SQliteRepository::delete_job(const std::string& id) {
+
+}
+
+std::optional<JobData> SQliteRepository::find_by_id(const std::string& id) {
+
+}
+
+std::vector<JobData> SQliteRepository::find_all() {
+
+}
+
+std::vector<JobData> SQliteRepository::find_active() {
+
+}
