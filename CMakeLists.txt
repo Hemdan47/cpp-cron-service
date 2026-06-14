@@ -40,7 +40,9 @@ list(APPEND SOURCES "${sqlite3_SOURCE_DIR}/sqlite3.c")
 list(APPEND HEADERS "${sqlite3_SOURCE_DIR}/sqlite3.h")
 
 add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS}
-        src/main.cpp)
+        src/main.cpp
+        include/Application.h
+        src/Application.cpp)
 
 target_include_directories(${PROJECT_NAME} PRIVATE
         include
