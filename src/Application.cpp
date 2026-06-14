@@ -1,8 +1,9 @@
 #include "Application.h"
+#include "repository/SQliteRepository.h"
 
 
 Application::Application() {
-    this->repo = std::make_shared<SQLiteRepo>();
+    this->repo = std::make_shared<SQliteRepository>();
     // this->factory = std::make_shared<JobFactory>();
     // this->daemon = std::make_shared<SchedulerDaemon>(repo);
     // this->service = std::make_shared<JobService>(repo, factory, daemon);
