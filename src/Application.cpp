@@ -1,8 +1,8 @@
 #include "Application.h"
 
+
 Application::Application() {
-    // auto db = std::make_shared<SQLiteDatabase>("jobs.db");
-    // this->repo = std::make_shared<SQLiteRepo>(db);
+    this->repo = std::make_shared<SQLiteRepo>();
     // this->factory = std::make_shared<JobFactory>();
     // this->daemon = std::make_shared<SchedulerDaemon>(repo);
     // this->service = std::make_shared<JobService>(repo, factory, daemon);

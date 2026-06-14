@@ -19,40 +19,36 @@ FetchContent_Declare(
         GIT_REPOSITORY https://github.com/CrowCpp/Crow.git
         GIT_TAG        v1.2.0
 )
+FetchContent_MakeAvailable(crow)
 
 FetchContent_Declare(
         nlohmann_json
         GIT_REPOSITORY https://github.com/nlohmann/json.git
         GIT_TAG        v3.11.3
 )
+FetchContent_MakeAvailable(nlohmann_json)
 
 FetchContent_Declare(
-        sqlite3
-        URL https://www.sqlite.org/2024/sqlite-amalgamation-3460000.zip
+        sqlitecpp
+        GIT_REPOSITORY https://github.com/SRombauts/SQLiteCpp.git
+        GIT_TAG        3.3.2
 )
-
-FetchContent_MakeAvailable(crow nlohmann_json sqlite3)
+FetchContent_MakeAvailable(sqlitecpp)
 
 file(GLOB_RECURSE SOURCES "src/*.cpp")
 file(GLOB_RECURSE HEADERS "include/*.h" "include/*.hpp")
 
-list(APPEND SOURCES "${sqlite3_SOURCE_DIR}/sqlite3.c")
-list(APPEND HEADERS "${sqlite3_SOURCE_DIR}/sqlite3.h")
-
-add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS}
-        src/main.cpp
-        include/Application.h
-        src/Application.cpp)
+add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
 
 target_include_directories(${PROJECT_NAME} PRIVATE
         include
-        ${sqlite3_SOURCE_DIR}
 )
 
 target_link_libraries(${PROJECT_NAME}
         PRIVATE
         Crow::Crow
         nlohmann_json::nlohmann_json
+        SQLiteCpp
         $<$<PLATFORM_ID:Windows>:ws2_32>
         $<$<PLATFORM_ID:Windows>:mswsock>
 )

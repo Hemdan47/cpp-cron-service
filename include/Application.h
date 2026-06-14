@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
 #include <crow.h>
+#include "domain/IJobRepository.h"
 
 class Application {
 public:
@@ -11,7 +12,7 @@ public:
 
 
 private:
-    // std::shared_ptr<SQLiteRepo> repo;
+    std::shared_ptr<IJobRepository> repo;
     // std::shared_ptr<JobFactory> factory;
     // std::shared_ptr<SchedulerDaemon> daemon;
     // std::shared_ptr<JobService> service;
