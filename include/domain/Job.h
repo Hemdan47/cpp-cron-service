@@ -24,8 +24,6 @@ public:
     }
 
     virtual std::chrono::sys_seconds calculateNextRun(std::chrono::sys_seconds currentTime) = 0;
-    virtual ScheduleType getType() const = 0;
-    virtual std::string getSchedulePayload() const = 0 ;
 
     std::string get_id() const {
         return _id;
