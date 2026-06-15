@@ -11,7 +11,7 @@ enum class JobStatus {
 };
 
 
-inline JobStatus jobStatusFromString(const std::string& s) {
+inline JobStatus job_status_from_string(const std::string& s) {
     if (s == "ACTIVE")    return JobStatus::ACTIVE;
     if (s == "PAUSED")    return JobStatus::PAUSED;
     if (s == "RUNNING")   return JobStatus::RUNNING;
@@ -20,7 +20,7 @@ inline JobStatus jobStatusFromString(const std::string& s) {
     throw std::invalid_argument("Unknown job status: " + s);
 }
 
-inline std::string jobStatusToString(JobStatus s) {
+inline std::string job_status_to_string(JobStatus s) {
     switch (s) {
         case JobStatus::ACTIVE:    return "ACTIVE";
         case JobStatus::PAUSED:    return "PAUSED";

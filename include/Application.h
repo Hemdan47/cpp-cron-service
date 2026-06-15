@@ -12,10 +12,10 @@ public:
 
 
 private:
-    std::shared_ptr<IJobRepository> repo;
-    // std::shared_ptr<JobFactory> factory;
-    // std::shared_ptr<SchedulerDaemon> daemon;
-    // std::shared_ptr<JobService> service;
-    // std::shared_ptr<JobController> controller;
-    std::unique_ptr<crow::SimpleApp> crow;
+    std::shared_ptr<IJobRepository> _repository;
+    // std::shared_ptr<JobFactory> _factory;
+    // std::shared_ptr<SchedulerDaemon> _daemon;
+    // std::shared_ptr<JobService> _service;
+    // std::shared_ptr<JobController> _controller;
+    std::unique_ptr<crow::SimpleApp> _crow;
 };
