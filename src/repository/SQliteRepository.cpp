@@ -84,7 +84,11 @@ JobData SQliteRepository::update_job(const JobData& data) {
 }
 
 int SQliteRepository::delete_job(const std::string& id) {
-    
+
+    SQLite::Statement statement(*db,"DELETE FROM jobs where id = ?");
+    statement.bind(1, id);
+
+    return statement.exec();
 }
 
 std::optional<JobData> SQliteRepository::find_by_id(const std::string& id) {
