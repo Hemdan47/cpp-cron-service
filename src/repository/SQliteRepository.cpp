@@ -91,76 +91,81 @@ int SQliteRepository::delete_job(const std::string& id) {
     return statement.exec();
 }
 
-std::optional<JobData> SqliteRepository::find_by_id(const std::string& id)
-{
+std::optional<JobData> SqliteRepository::find_by_id(const std::string& id){
+
+    SQLite::Statement statement(*db,
+            "SELECT id, name, type, status, command, next_run, schedule_payload "
+            "FROM jobs WHERE id = ?"
+        );
     
-        query.bind(1, id);
+    statement.bind(1, id);
 
-        if (query.executeStep()) {
-            JobData job;
+    if (statement.executeStep()) {
+        JobData job;
 
-            job.id = query.getColumn(0).getString();
-            job.name = query.getColumn(1).getString();
-            job.type = query.getColumn(2).getString();
-            job.status = query.getColumn(3).getString();
-            job.command = query.getColumn(4).getString();
-            job.next_run = std::chrono::system_clock::time_point(
-            std::chrono::seconds(query.getColumn(5).getInt64()));
-            job.schedule_payload = query.getColumn(6).getString();
+        job.id = statement.getColumn(0).getString();
+        job.name = statement.getColumn(1).getString();
+        job.type = statement.getColumn(2).getString();
+        job.status = statement.getColumn(3).getString();
+        job.command = statement.getColumn(4).getString();
+        job.next_run = std::chrono::system_clock::time_point(
+        std::chrono::seconds(statement.getColumn(5).getInt64()));
+        job.schedule_payload = statement.getColumn(6).getString();
 
-            return job;
-        }
-      return std::nullopt;
+        return job;
+    }
+
+    return std::nullopt;
+}
     
 
+std::vector<JobData> SQliteRepository::find_all(){
     
+    SQLite::Statement statement(*db,
+            "SELECT id, name, type, status, command, next_run, schedule_payload FROM jobs");
 
-
-
-std::vector<JobData> SQliteRepository::find_all()
-{
     std::vector<JobData> jobs;
 
-        while (query.executeStep()) {
-            JobData job;
+    while (statement.executeStep()) {
+        JobData job;
 
-            job.id = query.getColumn(0).getString();
-            job.name = query.getColumn(1).getString();
-            job.type = query.getColumn(2).getString();
-            job.status = query.getColumn(3).getString();
-            job.command = query.getColumn(4).getString();
-            job.next_run = std::chrono::system_clock::time_point(
-            std::chrono::seconds(query.getColumn(5).getInt64()));
-            job.schedule_payload = query.getColumn(6).getString();
+        job.id = statement.getColumn(0).getString();
+        job.name = statement.getColumn(1).getString();
+        job.type = statement.getColumn(2).getString();
+        job.status = statement.getColumn(3).getString();
+        job.command = statement.getColumn(4).getString();
+        job.next_run = std::chrono::system_clock::time_point(
+        std::chrono::seconds(statement.getColumn(5).getInt64()));
+        job.schedule_payload = statement.getColumn(6).getString();
 
-            jobs.push_back(job);
-        }
+        jobs.push_back(job);
     }
-    
 
     return jobs;
 }
 
-std::vector<JobData> SQliteRepository::find_active()
-{
+std::vector<JobData> SQliteRepository::find_active(){
+
+    SQLite::Statement statement(*db,
+            "SELECT id, name, type, status, command, next_run, schedule_payload "
+            "FROM jobs WHERE status = 'ACTIVE'"
+        );
+
     std::vector<JobData> jobs;
-
     
+    while (statement.executeStep()) {
+        JobData job;
 
-        while (query.executeStep()) {
-            JobData job;
+        job.id = statement.getColumn(0).getString();
+        job.name = statement.getColumn(1).getString();
+        job.type = statement.getColumn(2).getString();
+        job.status = statement.getColumn(3).getString();
+        job.command = statement.getColumn(4).getString();
+        job.next_run = std::chrono::system_clock::time_point(
+        std::chrono::seconds(statement.getColumn(5).getInt64()));
+        job.schedule_payload = statement.getColumn(6).getString();
 
-            job.id = query.getColumn(0).getString();
-            job.name = query.getColumn(1).getString();
-            job.type = query.getColumn(2).getString();
-            job.status = query.getColumn(3).getString();
-            job.command = query.getColumn(4).getString();
-            job.next_run = query.getColumn(5).getInt64();
-            job.schedule_payload = query.getColumn(6).getString();
-
-            jobs.push_back(job);
-        }
-    }
+        jobs.push_back(job);
     }
 
     return jobs;
