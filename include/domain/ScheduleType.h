@@ -20,5 +20,6 @@ inline std::string schedule_type_to_string(ScheduleType t) {
         case ScheduleType::CRON:     return "CRON";
         case ScheduleType::INTERVAL: return "INTERVAL";
         case ScheduleType::ONETIME:  return "ONETIME";
+        default: throw std::invalid_argument("Unknown schedule type:");
     }
 }

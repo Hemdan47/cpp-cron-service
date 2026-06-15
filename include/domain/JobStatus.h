@@ -27,5 +27,6 @@ inline std::string job_status_to_string(JobStatus s) {
         case JobStatus::RUNNING:   return "RUNNING";
         case JobStatus::COMPLETED: return "COMPLETED";
         case JobStatus::FAILED:    return "FAILED";
+        default: throw std::invalid_argument("Unknown job status");
     }
 }

@@ -91,7 +91,7 @@ int SQliteRepository::delete_job(const std::string& id) {
     return statement.exec();
 }
 
-std::optional<JobData> SqliteRepository::find_by_id(const std::string& id){
+std::optional<JobData> SQliteRepository::find_by_id(const std::string& id){
 
     SQLite::Statement statement(*db,
             "SELECT id, name, type, status, command, next_run, schedule_payload "
@@ -103,14 +103,13 @@ std::optional<JobData> SqliteRepository::find_by_id(const std::string& id){
     if (statement.executeStep()) {
         JobData job;
 
-        job.id = statement.getColumn(0).getString();
-        job.name = statement.getColumn(1).getString();
-        job.type = statement.getColumn(2).getString();
-        job.status = statement.getColumn(3).getString();
-        job.command = statement.getColumn(4).getString();
-        job.next_run = std::chrono::system_clock::time_point(
-        std::chrono::seconds(statement.getColumn(5).getInt64()));
-        job.schedule_payload = statement.getColumn(6).getString();
+        job._id = statement.getColumn(0).getString();
+        job._name = statement.getColumn(1).getString();
+        job._type = schedule_type_from_string(statement.getColumn(2).getString());
+        job._status = job_status_from_string(statement.getColumn(3).getString());
+        job._command = statement.getColumn(4).getString();
+        job._next_run = std::chrono::sys_seconds(std::chrono::seconds(statement.getColumn(5).getInt64()));
+        job._schedule_payload = statement.getColumn(6).getString();
 
         return job;
     }
@@ -129,14 +128,13 @@ std::vector<JobData> SQliteRepository::find_all(){
     while (statement.executeStep()) {
         JobData job;
 
-        job.id = statement.getColumn(0).getString();
-        job.name = statement.getColumn(1).getString();
-        job.type = statement.getColumn(2).getString();
-        job.status = statement.getColumn(3).getString();
-        job.command = statement.getColumn(4).getString();
-        job.next_run = std::chrono::system_clock::time_point(
-        std::chrono::seconds(statement.getColumn(5).getInt64()));
-        job.schedule_payload = statement.getColumn(6).getString();
+        job._id = statement.getColumn(0).getString();
+        job._name = statement.getColumn(1).getString();
+        job._type = schedule_type_from_string(statement.getColumn(2).getString());
+        job._status = job_status_from_string(statement.getColumn(3).getString());
+        job._command = statement.getColumn(4).getString();
+        job._next_run = std::chrono::sys_seconds(std::chrono::seconds(statement.getColumn(5).getInt64()));
+        job._schedule_payload = statement.getColumn(6).getString();
 
         jobs.push_back(job);
     }
@@ -156,14 +154,13 @@ std::vector<JobData> SQliteRepository::find_active(){
     while (statement.executeStep()) {
         JobData job;
 
-        job.id = statement.getColumn(0).getString();
-        job.name = statement.getColumn(1).getString();
-        job.type = statement.getColumn(2).getString();
-        job.status = statement.getColumn(3).getString();
-        job.command = statement.getColumn(4).getString();
-        job.next_run = std::chrono::system_clock::time_point(
-        std::chrono::seconds(statement.getColumn(5).getInt64()));
-        job.schedule_payload = statement.getColumn(6).getString();
+        job._id = statement.getColumn(0).getString();
+        job._name = statement.getColumn(1).getString();
+        job._type = schedule_type_from_string(statement.getColumn(2).getString());
+        job._status = job_status_from_string(statement.getColumn(3).getString());
+        job._command = statement.getColumn(4).getString();
+        job._next_run = std::chrono::sys_seconds(std::chrono::seconds(statement.getColumn(5).getInt64()));
+        job._schedule_payload = statement.getColumn(6).getString();
 
         jobs.push_back(job);
     }
