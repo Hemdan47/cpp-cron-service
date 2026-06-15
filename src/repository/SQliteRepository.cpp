@@ -42,12 +42,7 @@ void SQliteRepository::delete_job(const JobData& data) {
 
 std::optional<JobData> SqliteRepository::find_by_id(const std::string& id)
 {
-    try {
-        SQLite::Statement query(*db,
-            "SELECT id, name, type, status, command, next_run, schedule_payload "
-            "FROM jobs WHERE id = ?"
-        );
-
+    
         query.bind(1, id);
 
         if (query.executeStep()) {
@@ -58,29 +53,22 @@ std::optional<JobData> SqliteRepository::find_by_id(const std::string& id)
             job.type = query.getColumn(2).getString();
             job.status = query.getColumn(3).getString();
             job.command = query.getColumn(4).getString();
-            job.next_run = query.getColumn(5).getInt64();
+            job.next_run = std::chrono::system_clock::time_point(
+            std::chrono::seconds(query.getColumn(5).getInt64()));
             job.schedule_payload = query.getColumn(6).getString();
 
             return job;
         }
+      return std::nullopt;
+    
 
-        return std::nullopt;
-    }
-    catch (const std::exception& e) {
-        std::cout << "find_by_id error: " << e.what() << std::endl;
-        return std::nullopt;
-    }
-}    
+    
+
 
 
 std::vector<JobData> SQliteRepository::find_all()
 {
     std::vector<JobData> jobs;
-
-    try {
-        SQLite::Statement query(*db,
-            "SELECT id, name, type, status, command, next_run, schedule_payload FROM jobs"
-        );
 
         while (query.executeStep()) {
             JobData job;
@@ -90,15 +78,14 @@ std::vector<JobData> SQliteRepository::find_all()
             job.type = query.getColumn(2).getString();
             job.status = query.getColumn(3).getString();
             job.command = query.getColumn(4).getString();
-            job.next_run = query.getColumn(5).getInt64();
+            job.next_run = std::chrono::system_clock::time_point(
+            std::chrono::seconds(query.getColumn(5).getInt64()));
             job.schedule_payload = query.getColumn(6).getString();
 
             jobs.push_back(job);
         }
     }
-    catch (std::exception& e) {
-        std::cout << "find_all error: " << e.what() << std::endl;
-    }
+    
 
     return jobs;
 }
@@ -107,11 +94,7 @@ std::vector<JobData> SQliteRepository::find_active()
 {
     std::vector<JobData> jobs;
 
-    try {
-        SQLite::Statement query(*db,
-            "SELECT id, name, type, status, command, next_run, schedule_payload "
-            "FROM jobs WHERE status = 'ACTIVE'"
-        );
+    
 
         while (query.executeStep()) {
             JobData job;
@@ -127,8 +110,6 @@ std::vector<JobData> SQliteRepository::find_active()
             jobs.push_back(job);
         }
     }
-    catch (std::exception& e) {
-        std::cout << "find_active error: " << e.what() << std::endl;
     }
 
     return jobs;
