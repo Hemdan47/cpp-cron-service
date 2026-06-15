@@ -33,6 +33,28 @@ void SQliteRepository::initialize_schema() const{
 
 JobData SQliteRepository::save_job(const JobData& data) {
 
+    const std::int64_t next_run = data._next_run.time_since_epoch().count();
+    const std::string scheduler_type = schedule_type_to_string(data._type);
+    const std::string scheduler_status = job_status_to_string(data._status);
+
+    SQLite::Statement statement(*db, "INSERT INTO jobs VALUES(?, ?, ?, ?, ?, ?, ?)");
+
+    statement.bind(1, data._id);
+    statement.bind(2, data._name);
+    statement.bind(3, scheduler_type);
+    statement.bind(4, scheduler_status);
+    statement.bind(5, data._command);
+    statement.bind(6, next_run);
+    statement.bind(7, data._schedule_payload);
+
+    const int count = statement.exec();
+    if (count == 0) {
+        throw std::runtime_error("can't save the job");
+    }
+
+    auto saved_job = find_by_id(data._id);
+    return saved_job.value();
+
 }
 
 JobData SQliteRepository::update_job(const JobData& data) {
