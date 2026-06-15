@@ -3,7 +3,7 @@
 
 class OneTimeJob : public Job {
 public:
-    OneTimeJob(std::string id , std::string name , ScheduleType type , std::string command , JobStatus status , std::string schedulePayload);
+    OneTimeJob(std::string id , std::string name , ScheduleType type , std::string command , JobStatus status , std::string schedule_payload);
 
     explicit OneTimeJob(const JobData &data);
 

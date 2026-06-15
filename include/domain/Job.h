@@ -10,18 +10,18 @@
 class Job {
 public:
 
-    Job(std::string id , std::string name , ScheduleType type , std::string command , JobStatus status , std::string schedulePayload)
+    Job(std::string id , std::string name , ScheduleType type , std::string command , JobStatus status , std::string schedule_payload)
         : _id(id) , _name(name) , _type(type), _command(command),
-          _status(status), _schedulePayload(schedulePayload){}
+          _status(status), _schedule_payload(schedule_payload){}
 
     explicit Job(const JobData &data) {
-        this->_id = data.id;
-        this->_name = data.name;
-        this->_type = data.type;
-        this->_command = data.command;
-        this->_status = data.status;
+        this->_id = data._id;
+        this->_name = data._name;
+        this->_type = data._type;
+        this->_command = data._command;
+        this->_status = data._status;
         this->_next_run = data._next_run;
-        this->_schedulePayload = data.schedulePayload;
+        this->_schedule_payload = data._schedule_payload;
     }
 
     virtual std::chrono::sys_seconds calculate_next_run() = 0;
@@ -75,11 +75,11 @@ public:
     }
 
     std::string get_schedule_payload() const {
-        return _schedulePayload;
+        return _schedule_payload;
     }
 
     void set_schedule_payload(const std::string &schedule_payload) {
-        this->_schedulePayload = schedule_payload;
+        this->_schedule_payload = schedule_payload;
     }
 
     virtual ~Job() = default;
@@ -93,5 +93,5 @@ private:
     std::string  _command;
     JobStatus    _status;
     std::chrono::sys_seconds _next_run;
-    std::string  _schedulePayload;
+    std::string  _schedule_payload;
 };

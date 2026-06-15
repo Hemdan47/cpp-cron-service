@@ -6,11 +6,11 @@
 
 class JobData {
 public:
-    std::string  id;
-    std::string  name;
-    ScheduleType type;
-    std::string  command;
-    JobStatus    status;
+    std::string  _id;
+    std::string  _name;
+    ScheduleType _type;
+    std::string  _command;
+    JobStatus    _status;
     std::chrono::sys_seconds _next_run;
-    std::string  schedulePayload;
+    std::string  _schedule_payload;
 };

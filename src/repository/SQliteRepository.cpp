@@ -3,6 +3,8 @@
 #include <optional>
 #include <repository/SQliteRepository.h>
 #include "SQLiteCpp/Database.h"
+#include "domain/JobStatus.h"
+#include "domain/ScheduleType.h"
 
 SQliteRepository::SQliteRepository() {
     try {
