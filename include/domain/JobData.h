@@ -1,4 +1,5 @@
 #pragma once
+#include <chrono>
 #include <string>
 #include "domain/ScheduleType.h"
 #include "domain/JobStatus.h"
@@ -10,5 +11,6 @@ public:
     ScheduleType type;
     std::string  command;
     JobStatus    status;
+    std::chrono::sys_seconds _next_run;
     std::string  schedulePayload;
 };

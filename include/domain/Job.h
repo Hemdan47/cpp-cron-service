@@ -20,10 +20,11 @@ public:
         this->_type = data.type;
         this->_command = data.command;
         this->_status = data.status;
+        this->_next_run = data._next_run;
         this->_schedulePayload = data.schedulePayload;
     }
 
-    virtual std::chrono::sys_seconds calculateNextRun(std::chrono::sys_seconds currentTime) = 0;
+    virtual std::chrono::sys_seconds calculate_next_run() = 0;
 
     std::string get_id() const {
         return _id;
@@ -65,6 +66,14 @@ public:
         this->_status = status;
     }
 
+    std::chrono::sys_seconds get_next_run() {
+        return _next_run;
+    }
+
+    void set_next_run(std::chrono::sys_seconds next_run) {
+        this->_next_run = next_run;
+    }
+
     std::string get_schedule_payload() const {
         return _schedulePayload;
     }
@@ -83,5 +92,6 @@ private:
     ScheduleType _type;
     std::string  _command;
     JobStatus    _status;
+    std::chrono::sys_seconds _next_run;
     std::string  _schedulePayload;
 };

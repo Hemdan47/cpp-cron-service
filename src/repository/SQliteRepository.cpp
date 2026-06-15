@@ -1,3 +1,4 @@
+#include <format>
 #include <iostream>
 #include <optional>
 #include <repository/SQliteRepository.h>
@@ -28,15 +29,15 @@ void SQliteRepository::initialize_schema() const{
         )");
 }
 
-void SQliteRepository::save_job(const JobData& data) {
+JobData SQliteRepository::save_job(const JobData& data) {
 
 }
 
-void SQliteRepository::update_job(const JobData& data) {
+JobData SQliteRepository::update_job(const JobData& data) {
 
 }
 
-void SQliteRepository::delete_job(const std::string& id) {
+int SQliteRepository::delete_job(const std::string& id) {
 
 }
 
