@@ -59,10 +59,32 @@ JobData SQliteRepository::save_job(const JobData& data) {
 
 JobData SQliteRepository::update_job(const JobData& data) {
 
+    const std::int64_t next_run = data._next_run.time_since_epoch().count();
+    const std::string scheduler_type = schedule_type_to_string(data._type);
+    const std::string scheduler_status = job_status_to_string(data._status);
+
+    SQLite::Statement statement(*db,
+        "UPDATE jobs SET name = ?, type = ?, status = ?, command = ?, next_run = ?, schedule_payload = ? WHERE id = ?");
+
+    statement.bind(1, data._name);
+    statement.bind(2, scheduler_type);
+    statement.bind(3, scheduler_status);
+    statement.bind(4, data._command);
+    statement.bind(5, next_run);
+    statement.bind(6, data._schedule_payload);
+    statement.bind(7, data._id);
+
+    const int count = statement.exec();
+    if (count == 0) {
+        throw std::runtime_error("can't update the job");
+    }
+
+    auto updated_job = find_by_id(data._id);
+    return updated_job.value();
 }
 
 int SQliteRepository::delete_job(const std::string& id) {
-
+    
 }
 
 std::optional<JobData> SQliteRepository::find_by_id(const std::string& id) {

@@ -11,7 +11,7 @@ Application::Application() {
 }
 
 void Application::run() {
-    
+
     // JobRecoveryService recovery_manager(_repo, _factory, _daemon);
     // recovery_manager.execute();
     // _controller->registerRoutes(_crow);
