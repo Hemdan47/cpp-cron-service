@@ -86,7 +86,7 @@ public:
 
 
 
-private:
+protected:
     std::string  _id;
     std::string  _name;
     ScheduleType _type;
