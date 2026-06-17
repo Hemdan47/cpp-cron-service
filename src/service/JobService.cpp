@@ -24,7 +24,13 @@ JobData JobService::create_job(JobData data) {
 }
 
 JobData JobService::pause_job(const std::string& id) {
+    std::optional<JobData> data = _repo->find_by_id(id);
+    if (!data.has_value()) {
+        throw std::invalid_argument("invalid job id");
+    }
 
+    data.value()._status = JobStatus::PAUSED;
+    return _repo->update_job(data.value());
 }
 
 JobData JobService::resumeJob(const std::string& id) {
