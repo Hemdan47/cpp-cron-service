@@ -144,4 +144,38 @@ crow::response JobController::_pause_job(const crow::request &req, const std::st
     }
 }
 
+crow::response JobController::_delete_job(const crow::request &req, const std::string& id) {
+
+    try {
+        _service->delete_job(id);
+        json res;
+        res["id"] = id;
+        res["message"] = "Job deleted successfully";
+
+        return crow::response(200, res.dump());
+    }
+    catch (JobNotFoundException& e) {
+        json res = {
+            {"status", 404},
+            {"message", e.what()}
+        };
+        return crow::response(404, res.dump());
+
+    }
+    catch (std::runtime_error& e) {
+        json res = {
+            {"status", 400},
+            {"message", e.what()}
+        };
+        return crow::response(400, res.dump());
+    }
+    catch (std::exception& e) {
+        json res = {
+            {"status", 500},
+            {"message", e.what()}
+        };
+        return crow::response(500, res.dump());
+    }
+}
+
 
