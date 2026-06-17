@@ -1,4 +1,5 @@
 #include "controller/JobController.h"
+#include <nlohmann/json.hpp>
 
 JobController::JobController(std::shared_ptr<JobService> service, std::shared_ptr<crow::SimpleApp> app)
     :_service(std::move(service)), _app(std::move(app))
@@ -45,3 +46,4 @@ void JobController::_register_routes(std::shared_ptr<crow::SimpleApp> app) {
     });
 
 }
+
