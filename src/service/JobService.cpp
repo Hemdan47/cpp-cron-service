@@ -50,12 +50,11 @@ JobData JobService::resume_job(const std::string& id) {
     return _repo->update_job(data.value());
 }
 
-int JobService::delete_job(const std::string& id) {
+void JobService::delete_job(const std::string& id) {
     const int count = _repo->delete_job(id);
     if (!count) {
         throw std::invalid_argument("invalid job id");
     }
 
     _daemon->remove_job(id);
-    return count;
 }
