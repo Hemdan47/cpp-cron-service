@@ -215,6 +215,79 @@ crow::response JobController::_delete_job(const crow::request &req, const std::s
         };
         return crow::response(500, res.dump());
     }
+
+}
+crow::response JobController::_get_job_by_id(const std::string& id) {
+
+    try {
+        JobData result = _service->get_job_by_id(id);
+
+        json res;
+        res["id"] = result._id;
+        res["name"] = result._name;
+        res["type"] = schedule_type_to_string(result._type);
+        res["status"] = job_status_to_string(result._status);
+        res["next_run"] = result._next_run.time_since_epoch().count();
+        res["schedule_payload"] = result._schedule_payload;
+
+        return crow::response(200, res.dump());
+    }
+    catch (JobNotFoundException& e) {
+        json res = {
+            {"status", 404},
+            {"message", e.what()}
+        };
+        return crow::response(404, res.dump());
+    }
+    catch (std::runtime_error& e) {
+        json res = {
+            {"status", 400},
+            {"message", e.what()}
+        };
+        return crow::response(400, res.dump());
+    }
+    catch (std::exception& e) {
+        json res = {
+            {"status", 500},
+            {"message", e.what()}
+        };
+        return crow::response(500, res.dump());
+    }
+}
+crow::response JobController::_list_jobs() {
+
+    try {
+        std::vector<JobData> jobs = _service->get_all_jobs();
+
+        json res = json::array();
+
+        for (const auto& job : jobs) {
+            res.push_back({
+                {"id", job._id},
+                {"name", job._name},
+                {"type", schedule_type_to_string(job._type)},
+                {"status", job_status_to_string(job._status)},
+                {"next_run", job._next_run.time_since_epoch().count()},
+                {"schedule_payload", job._schedule_payload}
+            });
+        }
+
+        return crow::response(200, res.dump());
+    }
+    catch (std::runtime_error& e) {
+        json res = {
+            {"status", 400},
+            {"message", e.what()}
+        };
+        return crow::response(400, res.dump());
+    }
+    catch (std::exception& e) {
+        json res = {
+            {"status", 500},
+            {"message", e.what()}
+        };
+        return crow::response(500, res.dump());
+    }
 }
 
 
