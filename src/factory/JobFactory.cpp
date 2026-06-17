@@ -1,22 +1,25 @@
 #include "factory/JobFactory.h"
 #include <stdexcept>
+#include "domain/CronJob.h"
+#include "domain/IntervalJob.h"
+#include "domain/OneTimeJob.h"
 
-Job
+JobFactory::JobFactory() {
 
-std::unique_ptr<Job> JobFactory::create_job(const JobData &data) {
+    _registry[ScheduleType::CRON]     = [](const JobData& d) { return std::make_unique<CronJob>(d);};
+    _registry[ScheduleType::INTERVAL] = [](const JobData& d) { return std::make_unique<IntervalJob>(d);};
+    _registry[ScheduleType::ONETIME]  = [](const JobData& d) { return std::make_unique<OneTimeJob>(d);};
 
-    switch (data._type) {
+}
 
-        case ScheduleType::CRON:
-            return std::make_unique<CronJob>(data);
 
-        case ScheduleType::INTERVAL:
-            return std::make_unique<IntervalJob>(data);
+std::unique_ptr<Job> JobFactory::create_job(const JobData &data) const{
 
-        case ScheduleType::ONETIME:
-            return std::make_unique<OneTimeJob>(data);
-
-        default:
-            throw std::invalid_argument("Unknown schedule type in JobFactory");
+    const auto it = _registry.find(data._type);
+    if (it != _registry.end()) {
+        return it->second(data);
     }
+
+    throw std::invalid_argument("Unknown schedule type");
+
 }

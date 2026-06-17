@@ -9,8 +9,8 @@
 class JobFactory {
 public:
     JobFactory();
-    std::unique_ptr<Job> create_job(const JobData &data);
+    std::unique_ptr<Job> create_job(const JobData &data) const;
 
 private:
-    std::map<ScheduleType, std::function<std::unique_ptr<Job>(const JobData&)>> registry;
+    std::map<ScheduleType, std::function<std::unique_ptr<Job>(const JobData&)>> _registry;
 };

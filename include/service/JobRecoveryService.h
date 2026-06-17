@@ -1,7 +1,7 @@
 #pragma once
 #include <memory>
 #include "repository/IJobRepository.h"
-#include "factory/JopFactory.h"
+#include "factory/JobFactory.h"
 #include "scheduler/SchedulerDaemon.h"
 
 class JobRecoveryService {
