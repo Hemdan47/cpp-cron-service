@@ -1,5 +1,7 @@
-#include "factory/JopFactory.h"
+#include "factory/JobFactory.h"
 #include <stdexcept>
+
+Job
 
 std::unique_ptr<Job> JobFactory::create_job(const JobData &data) {
 
