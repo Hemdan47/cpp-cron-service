@@ -1,4 +1,4 @@
-#include "service/JopRecoveryService.h"
+#include "service/JobRecoveryService.h"
 
 JobRecoveryService::JobRecoveryService(
     std::shared_ptr<IJobRepository> repo,
