@@ -34,9 +34,20 @@ JobData JobService::pause_job(const std::string& id) {
 }
 
 JobData JobService::resumeJob(const std::string& id) {
+    std::optional<JobData> data = _repo->find_by_id(id);
+    if (!data.has_value()) {
+        throw std::invalid_argument("invalid job id");
+    }
 
+    data.value()._status = JobStatus::ACTIVE;
+    const std::shared_ptr<Job> job = _factory->create_job(data.value());
+    // the daemon will check internally if the job with this id already in the queue or not
+    _daemon->add_job(job);
+
+    return _repo->update_job(data.value());
 }
 
 int JobService::delete_job(const std::string& id) {
+
 
 }
