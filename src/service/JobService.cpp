@@ -1,4 +1,5 @@
 #include "service/JobService.h"
+#include "exceptions/JobNotFoundException.h"
 
 
 JobService::JobService(
@@ -39,7 +40,7 @@ JobData JobService::resume_job(const std::string& id) {
     if (!data.has_value()) {
         throw std::invalid_argument("invalid job id");
     }
-    
+
     data.value()._status = JobStatus::ACTIVE;
     const std::shared_ptr<Job> job = _factory->create_job(data.value());
     job->calculate_next_run();
@@ -55,7 +56,11 @@ void JobService::delete_job(const std::string& id) {
     if (!count) {
         throw std::invalid_argument("invalid job id");
     }
-    JobData JobService::get_job_by_id(const std::string& id) {
+
+    _daemon->remove_job(id);
+}
+
+JobData JobService::get_job_by_id(const std::string& id) {
     auto job = _repo->find_by_id(id);
 
     if (!job.has_value()) {
@@ -64,9 +69,7 @@ void JobService::delete_job(const std::string& id) {
 
     return job.value();
 }
+
 std::vector<JobData> JobService::get_all_jobs() {
     return _repo->find_all();
-}
-
-    _daemon->remove_job(id);
 }
