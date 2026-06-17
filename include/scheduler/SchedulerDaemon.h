@@ -9,6 +9,7 @@ public:
     ~SchedulerDaemon() = default;
 
     void add_job(std::shared_ptr<Job> job);
+    void remove_job(const std::string& id);
     void run();
 
 private:

@@ -1,6 +1,5 @@
 #include "service/JobService.h"
 
-#include <asio/detail/memory.hpp>
 
 JobService::JobService(
     std::shared_ptr<IJobRepository> repo,
@@ -13,7 +12,7 @@ JobData JobService::create_job(JobData data) {
     const std::string id = "id"; // leave a temp value for now later implement a uuid utility function
     data._id = id;
     data._status = JobStatus::ACTIVE;
-    std::shared_ptr<Job> job = _factory->create_job(data);
+    const std::shared_ptr<Job> job = _factory->create_job(data);
     job->calculate_next_run();
     data._next_run = job->get_next_run();
 
@@ -30,10 +29,12 @@ JobData JobService::pause_job(const std::string& id) {
     }
 
     data.value()._status = JobStatus::PAUSED;
+    _daemon->remove_job(id);
+
     return _repo->update_job(data.value());
 }
 
-JobData JobService::resumeJob(const std::string& id) {
+JobData JobService::resume_job(const std::string& id) {
     std::optional<JobData> data = _repo->find_by_id(id);
     if (!data.has_value()) {
         throw std::invalid_argument("invalid job id");
@@ -41,6 +42,8 @@ JobData JobService::resumeJob(const std::string& id) {
 
     data.value()._status = JobStatus::ACTIVE;
     const std::shared_ptr<Job> job = _factory->create_job(data.value());
+    job->calculate_next_run();
+    data.value()._next_run = job->get_next_run();
     // the daemon will check internally if the job with this id already in the queue or not
     _daemon->add_job(job);
 
@@ -48,6 +51,11 @@ JobData JobService::resumeJob(const std::string& id) {
 }
 
 int JobService::delete_job(const std::string& id) {
+    const int count = _repo->delete_job(id);
+    if (!count) {
+        throw std::invalid_argument("invalid job id");
+    }
 
-
+    _daemon->remove_job(id);
+    return count;
 }
