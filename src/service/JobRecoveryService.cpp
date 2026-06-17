@@ -18,6 +18,13 @@ void JobRecoveryService::execute() {
         const auto stored_next_run= job->get_next_run();
 
         if (stored_next_run < now) {
+            // one time job — time has passed, mark as completed and skip
+            if (job->get_schedule_type() == ScheduleType::ONETIME) {
+                dto._status = JobStatus::COMPLETED;
+                job->set_status(JobStatus::COMPLETED);
+                _repo->update_job(dto);
+                continue;
+            }
             // calculate_next_run will save the next run internally in the job object
             const std::chrono::sys_seconds new_next_run = job->calculate_next_run();
             dto._next_run = new_next_run;
