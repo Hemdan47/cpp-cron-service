@@ -17,9 +17,9 @@ Application::Application() {
 }
 
 void Application::run() {
-    this->_recovery_service->execute();
     this->_daemon->start();
-
+    this->_recovery_service->execute();
+    
     this->_crow->port(8080).multithreaded().run();
 
     this->_daemon->stop();
