@@ -1,4 +1,5 @@
 #include "scheduler/ThreadPool.h"
+#include "service/JobService.h"
 
 #include <iostream>
 #include <boost/process.hpp>

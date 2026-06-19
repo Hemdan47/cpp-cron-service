@@ -3,7 +3,8 @@
 #include <mutex>
 #include <queue>
 #include "domain/Job.h"
-#include "service/JobService.h"
+
+class JobService;
 
 class ThreadPool {
 public:

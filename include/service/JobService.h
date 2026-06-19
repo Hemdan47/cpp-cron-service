@@ -1,6 +1,5 @@
 #pragma once
 #include <memory>
-
 #include "factory/JobFactory.h"
 #include "repository/IJobRepository.h"
 #include "scheduler/SchedulerDaemon.h"
