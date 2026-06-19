@@ -66,7 +66,7 @@ public:
         this->_status = status;
     }
 
-    std::chrono::sys_seconds get_next_run() {
+    std::chrono::sys_seconds get_next_run() const {
         return _next_run;
     }
 
