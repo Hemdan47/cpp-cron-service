@@ -22,4 +22,10 @@ void ThreadPool::stop() {
 }
 
 
+void ThreadPool::enqueue(std::shared_ptr<Job> task) {
+    std::lock_guard<std::mutex> lock(_mutex);
+    _tasks.push(std::move(task));
+    _cv.notify_one();
+}
+
 
