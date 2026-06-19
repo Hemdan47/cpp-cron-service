@@ -35,6 +35,12 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(sqlitecpp)
 
+FetchContent_Declare(
+        boost
+        URL https://github.com/boostorg/boost/releases/download/boost-1.84.0/boost-1.84.0.tar.gz
+)
+FetchContent_MakeAvailable(boost)
+
 file(GLOB_RECURSE SOURCES "src/*.cpp")
 file(GLOB_RECURSE HEADERS "include/*.h" "include/*.hpp")
 
@@ -47,6 +53,7 @@ target_link_libraries(${PROJECT_NAME}
         Crow::Crow
         nlohmann_json::nlohmann_json
         SQLiteCpp
+        Boost::process
         $<$<PLATFORM_ID:Windows>:ws2_32>
         $<$<PLATFORM_ID:Windows>:mswsock>
 )
