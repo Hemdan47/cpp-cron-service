@@ -29,6 +29,10 @@ std::chrono::sys_seconds IntervalJob::calculate_next_run() {
     const auto now = std::chrono::floor<std::chrono::seconds>(
     std::chrono::system_clock::now());
 
+    if (get_next_run() > now) {
+        return get_next_run();
+    }
+
     if (get_next_run() == std::chrono::sys_seconds{}) {
         set_next_run(now + std::chrono::seconds(get_interval_seconds()));
         return get_next_run();

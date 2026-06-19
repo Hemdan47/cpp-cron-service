@@ -70,7 +70,7 @@ crow::response JobController::_create_job(const crow::request &req) {
         res["type"]             = schedule_type_to_string(result._type);
         res["status"]           = job_status_to_string(result._status);
         res["next_run"]         = result._next_run.time_since_epoch().count();
-        res["schedule_payload"] = result._schedule_payload;
+        res["schedule_payload"] = json::parse(result._schedule_payload);
 
         return crow::response(201, res.dump());
     }
@@ -116,7 +116,7 @@ crow::response JobController::_pause_job(const crow::request &req, const std::st
         res["type"]             = schedule_type_to_string(result._type);
         res["status"]           = job_status_to_string(result._status);
         res["next_run"]         = result._next_run.time_since_epoch().count();
-        res["schedule_payload"] = result._schedule_payload;
+        res["schedule_payload"] = json::parse(result._schedule_payload);
 
         return crow::response(200, res.dump());
     }
@@ -155,7 +155,7 @@ crow::response JobController::_resume_job(const crow::request &req, const std::s
         res["type"]             = schedule_type_to_string(result._type);
         res["status"]           = job_status_to_string(result._status);
         res["next_run"]         = result._next_run.time_since_epoch().count();
-        res["schedule_payload"] = result._schedule_payload;
+        res["schedule_payload"] = json::parse(result._schedule_payload);
 
         return crow::response(200, res.dump());
     }
@@ -228,7 +228,7 @@ crow::response JobController::_get_job_by_id(const std::string& id) {
         res["type"] = schedule_type_to_string(result._type);
         res["status"] = job_status_to_string(result._status);
         res["next_run"] = result._next_run.time_since_epoch().count();
-        res["schedule_payload"] = result._schedule_payload;
+        res["schedule_payload"] = json::parse(result._schedule_payload);
 
         return crow::response(200, res.dump());
     }
@@ -268,7 +268,7 @@ crow::response JobController::_list_jobs() {
                 {"type", schedule_type_to_string(job._type)},
                 {"status", job_status_to_string(job._status)},
                 {"next_run", job._next_run.time_since_epoch().count()},
-                {"schedule_payload", job._schedule_payload}
+                {"schedule_payload", json::parse(job._schedule_payload)}
             });
         }
 
