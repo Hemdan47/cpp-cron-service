@@ -1,5 +1,6 @@
 #pragma once
 #include <memory>
+#include <mutex>
 #include "IJobRepository.h"
 #include "SQLiteCpp/Database.h"
 
@@ -23,4 +24,5 @@ private:
     void initialize_schema() const;
 
     std::unique_ptr<SQLite::Database> db;
+    mutable std::recursive_mutex _mutex;
 };

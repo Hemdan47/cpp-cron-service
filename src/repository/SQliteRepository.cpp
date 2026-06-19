@@ -32,7 +32,7 @@ void SQliteRepository::initialize_schema() const{
 }
 
 JobData SQliteRepository::save_job(const JobData& data) {
-
+    std::lock_guard<std::recursive_mutex> lock(_mutex);
     const std::int64_t next_run = data._next_run.time_since_epoch().count();
     const std::string scheduler_type = schedule_type_to_string(data._type);
     const std::string scheduler_status = job_status_to_string(data._status);
@@ -58,7 +58,7 @@ JobData SQliteRepository::save_job(const JobData& data) {
 }
 
 JobData SQliteRepository::update_job(const JobData& data) {
-
+    std::lock_guard<std::recursive_mutex> lock(_mutex);
     const std::int64_t next_run = data._next_run.time_since_epoch().count();
     const std::string scheduler_type = schedule_type_to_string(data._type);
     const std::string scheduler_status = job_status_to_string(data._status);
@@ -84,7 +84,7 @@ JobData SQliteRepository::update_job(const JobData& data) {
 }
 
 int SQliteRepository::delete_job(const std::string& id) {
-
+    std::lock_guard<std::recursive_mutex> lock(_mutex);
     SQLite::Statement statement(*db,"DELETE FROM jobs where id = ?");
     statement.bind(1, id);
 
@@ -92,7 +92,7 @@ int SQliteRepository::delete_job(const std::string& id) {
 }
 
 std::optional<JobData> SQliteRepository::find_by_id(const std::string& id){
-
+    std::lock_guard<std::recursive_mutex> lock(_mutex);
     SQLite::Statement statement(*db,
             "SELECT id, name, type, status, command, next_run, schedule_payload "
             "FROM jobs WHERE id = ?"
@@ -119,7 +119,7 @@ std::optional<JobData> SQliteRepository::find_by_id(const std::string& id){
     
 
 std::vector<JobData> SQliteRepository::find_all(){
-    
+    std::lock_guard<std::recursive_mutex> lock(_mutex);
     SQLite::Statement statement(*db,
             "SELECT id, name, type, status, command, next_run, schedule_payload FROM jobs");
 
@@ -143,7 +143,7 @@ std::vector<JobData> SQliteRepository::find_all(){
 }
 
 std::vector<JobData> SQliteRepository::find_active(){
-
+    std::lock_guard<std::recursive_mutex> lock(_mutex);
     SQLite::Statement statement(*db,
             "SELECT id, name, type, status, command, next_run, schedule_payload "
             "FROM jobs WHERE status = 'ACTIVE'"
