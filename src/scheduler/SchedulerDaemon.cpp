@@ -29,3 +29,28 @@ void SchedulerDaemon::remove_job(const std::string& id) {
     _active_jobs.erase(id);
 }
 
+void SchedulerDaemon::run() {
+    while (!_stop_signal) {
+        std::unique_lock<std::mutex> lock(_mutex);
+
+        if (_queue.empty()) {
+            _cv.wait(lock);
+            continue;
+        }
+
+        auto job = _queue.top();
+        auto next_run = job->get_next_run();
+
+        auto status = _cv.wait_until(lock, next_run);
+
+        if (status == std::cv_status::timeout) {
+            const auto job_id = job->get_id();
+            _queue.pop();
+            if (_active_jobs.contains(job_id)) {
+                _active_jobs.erase(job_id);
+                _thread_pool->enqueue(job);
+            }
+        }
+
+    }
+}
