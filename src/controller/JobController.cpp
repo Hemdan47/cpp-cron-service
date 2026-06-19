@@ -64,44 +64,55 @@ crow::response JobController::_create_job(const crow::request &req) {
 
         JobData result = _service->create_job(data);
 
-        json res;
-        res["id"]               = result._id;
-        res["name"]             = result._name;
-        res["type"]             = schedule_type_to_string(result._type);
-        res["status"]           = job_status_to_string(result._status);
-        res["next_run"]         = result._next_run.time_since_epoch().count();
-        res["schedule_payload"] = json::parse(result._schedule_payload);
+        json res_json;
+        res_json["id"]               = result._id;
+        res_json["name"]             = result._name;
+        res_json["type"]             = schedule_type_to_string(result._type);
+        res_json["status"]           = job_status_to_string(result._status);
+        res_json["command"]          = result._command;
+        res_json["next_run"]         = result._next_run.time_since_epoch().count();
+        res_json["schedule_payload"] = json::parse(result._schedule_payload);
 
-        return crow::response(201, res.dump());
+        crow::response res(201, res_json.dump());
+        res.set_header("Content-Type", "application/json");
+        return res;
     }
     catch (JobNotFoundException& e) {
-        json res = {
+        json res_json = {
             {"status", 404},
             {"message", e.what()}
         };
-        return crow::response(404, res.dump());
+        crow::response res(404, res_json.dump());
+        res.set_header("Content-Type", "application/json");
+        return res;
 
     }
     catch (InvalidScheduleException& e) {
-        json res = {
+        json res_json = {
             {"status", 400},
             {"message", e.what()}
         };
-        return crow::response(400, res.dump());
+        crow::response res(400, res_json.dump());
+        res.set_header("Content-Type", "application/json");
+        return res;
     }
     catch (std::runtime_error& e) {
-        json res = {
+        json res_json = {
             {"status", 400},
             {"message", e.what()}
         };
-        return crow::response(400, res.dump());
+        crow::response res(400, res_json.dump());
+        res.set_header("Content-Type", "application/json");
+        return res;
     }
     catch (std::exception& e) {
-        json res = {
+        json res_json = {
             {"status", 500},
             {"message", e.what()}
         };
-        return crow::response(500, res.dump());
+        crow::response res(500, res_json.dump());
+        res.set_header("Content-Type", "application/json");
+        return res;
     }
 }
 
@@ -110,37 +121,46 @@ crow::response JobController::_pause_job(const crow::request &req, const std::st
     try {
         JobData result = _service->pause_job(id);
 
-        json res;
-        res["id"]               = result._id;
-        res["name"]             = result._name;
-        res["type"]             = schedule_type_to_string(result._type);
-        res["status"]           = job_status_to_string(result._status);
-        res["next_run"]         = result._next_run.time_since_epoch().count();
-        res["schedule_payload"] = json::parse(result._schedule_payload);
+        json res_json;
+        res_json["id"]               = result._id;
+        res_json["name"]             = result._name;
+        res_json["type"]             = schedule_type_to_string(result._type);
+        res_json["status"]           = job_status_to_string(result._status);
+        res_json["command"]          = result._command;
+        res_json["next_run"]         = result._next_run.time_since_epoch().count();
+        res_json["schedule_payload"] = json::parse(result._schedule_payload);
 
-        return crow::response(200, res.dump());
+        crow::response res(200, res_json.dump());
+        res.set_header("Content-Type", "application/json");
+        return res;
     }
     catch (JobNotFoundException& e) {
-        json res = {
+        json res_json = {
             {"status", 404},
             {"message", e.what()}
         };
-        return crow::response(404, res.dump());
+        crow::response res(404, res_json.dump());
+        res.set_header("Content-Type", "application/json");
+        return res;
 
     }
     catch (std::runtime_error& e) {
-        json res = {
+        json res_json = {
             {"status", 400},
             {"message", e.what()}
         };
-        return crow::response(400, res.dump());
+        crow::response res(400, res_json.dump());
+        res.set_header("Content-Type", "application/json");
+        return res;
     }
     catch (std::exception& e) {
-        json res = {
+        json res_json = {
             {"status", 500},
             {"message", e.what()}
         };
-        return crow::response(500, res.dump());
+        crow::response res(500, res_json.dump());
+        res.set_header("Content-Type", "application/json");
+        return res;
     }
 }
 
@@ -149,37 +169,46 @@ crow::response JobController::_resume_job(const crow::request &req, const std::s
     try {
         JobData result = _service->resume_job(id);
 
-        json res;
-        res["id"]               = result._id;
-        res["name"]             = result._name;
-        res["type"]             = schedule_type_to_string(result._type);
-        res["status"]           = job_status_to_string(result._status);
-        res["next_run"]         = result._next_run.time_since_epoch().count();
-        res["schedule_payload"] = json::parse(result._schedule_payload);
+        json res_json;
+        res_json["id"]               = result._id;
+        res_json["name"]             = result._name;
+        res_json["type"]             = schedule_type_to_string(result._type);
+        res_json["status"]           = job_status_to_string(result._status);
+        res_json["command"]          = result._command;
+        res_json["next_run"]         = result._next_run.time_since_epoch().count();
+        res_json["schedule_payload"] = json::parse(result._schedule_payload);
 
-        return crow::response(200, res.dump());
+        crow::response res(200, res_json.dump());
+        res.set_header("Content-Type", "application/json");
+        return res;
     }
     catch (JobNotFoundException& e) {
-        json res = {
+        json res_json = {
             {"status", 404},
             {"message", e.what()}
         };
-        return crow::response(404, res.dump());
+        crow::response res(404, res_json.dump());
+        res.set_header("Content-Type", "application/json");
+        return res;
 
     }
     catch (std::runtime_error& e) {
-        json res = {
+        json res_json = {
             {"status", 400},
             {"message", e.what()}
         };
-        return crow::response(400, res.dump());
+        crow::response res(400, res_json.dump());
+        res.set_header("Content-Type", "application/json");
+        return res;
     }
     catch (std::exception& e) {
-        json res = {
+        json res_json = {
             {"status", 500},
             {"message", e.what()}
         };
-        return crow::response(500, res.dump());
+        crow::response res(500, res_json.dump());
+        res.set_header("Content-Type", "application/json");
+        return res;
     }
 }
 
@@ -187,33 +216,41 @@ crow::response JobController::_delete_job(const crow::request &req, const std::s
 
     try {
         _service->delete_job(id);
-        json res;
-        res["id"] = id;
-        res["message"] = "Job deleted successfully";
+        json res_json;
+        res_json["id"] = id;
+        res_json["message"] = "Job deleted successfully";
 
-        return crow::response(200, res.dump());
+        crow::response res(200, res_json.dump());
+        res.set_header("Content-Type", "application/json");
+        return res;
     }
     catch (JobNotFoundException& e) {
-        json res = {
+        json res_json = {
             {"status", 404},
             {"message", e.what()}
         };
-        return crow::response(404, res.dump());
+        crow::response res(404, res_json.dump());
+        res.set_header("Content-Type", "application/json");
+        return res;
 
     }
     catch (std::runtime_error& e) {
-        json res = {
+        json res_json = {
             {"status", 400},
             {"message", e.what()}
         };
-        return crow::response(400, res.dump());
+        crow::response res(400, res_json.dump());
+        res.set_header("Content-Type", "application/json");
+        return res;
     }
     catch (std::exception& e) {
-        json res = {
+        json res_json = {
             {"status", 500},
             {"message", e.what()}
         };
-        return crow::response(500, res.dump());
+        crow::response res(500, res_json.dump());
+        res.set_header("Content-Type", "application/json");
+        return res;
     }
 
 }
@@ -222,36 +259,45 @@ crow::response JobController::_get_job_by_id(const std::string& id) {
     try {
         JobData result = _service->get_job_by_id(id);
 
-        json res;
-        res["id"] = result._id;
-        res["name"] = result._name;
-        res["type"] = schedule_type_to_string(result._type);
-        res["status"] = job_status_to_string(result._status);
-        res["next_run"] = result._next_run.time_since_epoch().count();
-        res["schedule_payload"] = json::parse(result._schedule_payload);
+        json res_json;
+        res_json["id"] = result._id;
+        res_json["name"] = result._name;
+        res_json["type"] = schedule_type_to_string(result._type);
+        res_json["status"] = job_status_to_string(result._status);
+        res_json["command"] = result._command;
+        res_json["next_run"] = result._next_run.time_since_epoch().count();
+        res_json["schedule_payload"] = json::parse(result._schedule_payload);
 
-        return crow::response(200, res.dump());
+        crow::response res(200, res_json.dump());
+        res.set_header("Content-Type", "application/json");
+        return res;
     }
     catch (JobNotFoundException& e) {
-        json res = {
+        json res_json = {
             {"status", 404},
             {"message", e.what()}
         };
-        return crow::response(404, res.dump());
+        crow::response res(404, res_json.dump());
+        res.set_header("Content-Type", "application/json");
+        return res;
     }
     catch (std::runtime_error& e) {
-        json res = {
+        json res_json = {
             {"status", 400},
             {"message", e.what()}
         };
-        return crow::response(400, res.dump());
+        crow::response res(400, res_json.dump());
+        res.set_header("Content-Type", "application/json");
+        return res;
     }
     catch (std::exception& e) {
-        json res = {
+        json res_json = {
             {"status", 500},
             {"message", e.what()}
         };
-        return crow::response(500, res.dump());
+        crow::response res(500, res_json.dump());
+        res.set_header("Content-Type", "application/json");
+        return res;
     }
 }
 crow::response JobController::_list_jobs() {
@@ -259,35 +305,40 @@ crow::response JobController::_list_jobs() {
     try {
         std::vector<JobData> jobs = _service->get_all_jobs();
 
-        json res = json::array();
+        json res_json = json::array();
 
         for (const auto& job : jobs) {
-            res.push_back({
+            res_json.push_back({
                 {"id", job._id},
                 {"name", job._name},
                 {"type", schedule_type_to_string(job._type)},
                 {"status", job_status_to_string(job._status)},
+                {"command", job._command},
                 {"next_run", job._next_run.time_since_epoch().count()},
                 {"schedule_payload", json::parse(job._schedule_payload)}
             });
         }
 
-        return crow::response(200, res.dump());
+        crow::response res(200, res_json.dump());
+        res.set_header("Content-Type", "application/json");
+        return res;
     }
     catch (std::runtime_error& e) {
-        json res = {
+        json res_json = {
             {"status", 400},
             {"message", e.what()}
         };
-        return crow::response(400, res.dump());
+        crow::response res(400, res_json.dump());
+        res.set_header("Content-Type", "application/json");
+        return res;
     }
     catch (std::exception& e) {
-        json res = {
+        json res_json = {
             {"status", 500},
             {"message", e.what()}
         };
-        return crow::response(500, res.dump());
+        crow::response res(500, res_json.dump());
+        res.set_header("Content-Type", "application/json");
+        return res;
     }
 }
-
-
