@@ -22,3 +22,20 @@ std::chrono::sys_seconds iso_to_sys_seconds(const std::string& iso_date) {
     + minutes{_minute}
     + seconds{_second};
 }
+
+std::tuple<unsigned, unsigned, int, int, int> sys_seconds_to_calendar(const std::chrono::sys_seconds tp) {
+    using namespace std::chrono;
+
+    const auto days_part = floor<days>(tp);
+    const year_month_day ymd{days_part};
+    const weekday wd{days_part};
+    const hh_mm_ss hms{tp - days_part};
+
+    return {
+        static_cast<unsigned>(ymd.month()),
+        static_cast<unsigned>(ymd.day()),
+        static_cast<int>(hms.hours().count()),
+        static_cast<int>(hms.minutes().count()),
+        static_cast<int>(wd.c_encoding())
+    };
+}
