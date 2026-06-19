@@ -22,3 +22,10 @@ void SchedulerDaemon::add_job(std::shared_ptr<Job> job) {
     _cv.notify_one();
 }
 
+void SchedulerDaemon::remove_job(const std::string& id) {
+    //we can't remove a job from the priority queue in efficient time so we will soft delete by
+    //removing the id from the active_jobs and double check in the run loop
+    std::lock_guard<std::mutex> lock(_mutex);
+    _active_jobs.erase(id);
+}
+
