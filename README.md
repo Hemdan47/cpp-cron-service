@@ -221,14 +221,14 @@ Status code mapping: `404` `JobNotFoundException`, `400` `InvalidScheduleExcepti
 
 ### Create request
 
-`schedule_payload` is sent as a JSON object and stored serialized:
+`schedule_payload` is sent as a JSON object and stored serialized. Because commands are executed directly (without a shell), shell built-ins or redirections (like `>>`) must be wrapped inside a shell executable (such as `cmd.exe /c` on Windows or `sh -c` on Unix):
 
 ```bash
-# Cron: 14:30 every weekday
+# Cron: 14:30 every weekday (Windows cmd.exe example)
 curl -X POST http://localhost:8080/api/jobs \
   -H "Content-Type: application/json" \
   -d '{"name":"daily-report","type":"CRON",
-       "command":"echo hello >> report.log",
+       "command":"cmd.exe /c \"echo hello >> report.log\"",
        "schedule_payload":{"expression":"30 14 * * 1-5"}}'
 
 # Interval: every 60 seconds
@@ -238,11 +238,11 @@ curl -X POST http://localhost:8080/api/jobs \
        "command":"curl -s http://example.com/health",
        "schedule_payload":{"interval_seconds":60}}'
 
-# One-time: fire once at a fixed instant
+# One-time: fire once at a fixed instant (Linux/macOS sh example)
 curl -X POST http://localhost:8080/api/jobs \
   -H "Content-Type: application/json" \
   -d '{"name":"one-shot","type":"ONETIME",
-       "command":"backup.sh",
+       "command":"sh -c \"echo hello one-time >> log_onetime.txt\"",
        "schedule_payload":{"iso_date":"2026-07-01T15:30:00"}}'
 ```
 
