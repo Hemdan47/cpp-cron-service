@@ -5,6 +5,7 @@
 #include "exceptions/JobNotFoundException.h"
 
 using json = nlohmann::json;
+using ordered_json = nlohmann::ordered_json;
 
 JobController::JobController(std::shared_ptr<JobService> service, std::shared_ptr<crow::SimpleApp> app)
     :_service(std::move(service)), _app(std::move(app))
@@ -64,13 +65,13 @@ crow::response JobController::_create_job(const crow::request &req) {
 
         JobData result = _service->create_job(data);
 
-        json res_json;
+        ordered_json res_json;
         res_json["id"]               = result._id;
         res_json["name"]             = result._name;
         res_json["type"]             = schedule_type_to_string(result._type);
         res_json["status"]           = job_status_to_string(result._status);
-        res_json["command"]          = result._command;
         res_json["next_run"]         = result._next_run.time_since_epoch().count();
+        res_json["command"]          = result._command;
         res_json["schedule_payload"] = json::parse(result._schedule_payload);
 
         crow::response res(201, res_json.dump());
@@ -78,7 +79,7 @@ crow::response JobController::_create_job(const crow::request &req) {
         return res;
     }
     catch (JobNotFoundException& e) {
-        json res_json = {
+        ordered_json res_json = {
             {"status", 404},
             {"message", e.what()}
         };
@@ -88,7 +89,7 @@ crow::response JobController::_create_job(const crow::request &req) {
 
     }
     catch (InvalidScheduleException& e) {
-        json res_json = {
+        ordered_json res_json = {
             {"status", 400},
             {"message", e.what()}
         };
@@ -97,7 +98,7 @@ crow::response JobController::_create_job(const crow::request &req) {
         return res;
     }
     catch (std::runtime_error& e) {
-        json res_json = {
+        ordered_json res_json = {
             {"status", 400},
             {"message", e.what()}
         };
@@ -106,7 +107,7 @@ crow::response JobController::_create_job(const crow::request &req) {
         return res;
     }
     catch (std::exception& e) {
-        json res_json = {
+        ordered_json res_json = {
             {"status", 500},
             {"message", e.what()}
         };
@@ -121,13 +122,13 @@ crow::response JobController::_pause_job(const crow::request &req, const std::st
     try {
         JobData result = _service->pause_job(id);
 
-        json res_json;
+        ordered_json res_json;
         res_json["id"]               = result._id;
         res_json["name"]             = result._name;
         res_json["type"]             = schedule_type_to_string(result._type);
         res_json["status"]           = job_status_to_string(result._status);
-        res_json["command"]          = result._command;
         res_json["next_run"]         = result._next_run.time_since_epoch().count();
+        res_json["command"]          = result._command;
         res_json["schedule_payload"] = json::parse(result._schedule_payload);
 
         crow::response res(200, res_json.dump());
@@ -135,7 +136,7 @@ crow::response JobController::_pause_job(const crow::request &req, const std::st
         return res;
     }
     catch (JobNotFoundException& e) {
-        json res_json = {
+        ordered_json res_json = {
             {"status", 404},
             {"message", e.what()}
         };
@@ -145,7 +146,7 @@ crow::response JobController::_pause_job(const crow::request &req, const std::st
 
     }
     catch (std::runtime_error& e) {
-        json res_json = {
+        ordered_json res_json = {
             {"status", 400},
             {"message", e.what()}
         };
@@ -154,7 +155,7 @@ crow::response JobController::_pause_job(const crow::request &req, const std::st
         return res;
     }
     catch (std::exception& e) {
-        json res_json = {
+        ordered_json res_json = {
             {"status", 500},
             {"message", e.what()}
         };
@@ -169,13 +170,13 @@ crow::response JobController::_resume_job(const crow::request &req, const std::s
     try {
         JobData result = _service->resume_job(id);
 
-        json res_json;
+        ordered_json res_json;
         res_json["id"]               = result._id;
         res_json["name"]             = result._name;
         res_json["type"]             = schedule_type_to_string(result._type);
         res_json["status"]           = job_status_to_string(result._status);
-        res_json["command"]          = result._command;
         res_json["next_run"]         = result._next_run.time_since_epoch().count();
+        res_json["command"]          = result._command;
         res_json["schedule_payload"] = json::parse(result._schedule_payload);
 
         crow::response res(200, res_json.dump());
@@ -183,7 +184,7 @@ crow::response JobController::_resume_job(const crow::request &req, const std::s
         return res;
     }
     catch (JobNotFoundException& e) {
-        json res_json = {
+        ordered_json res_json = {
             {"status", 404},
             {"message", e.what()}
         };
@@ -193,7 +194,7 @@ crow::response JobController::_resume_job(const crow::request &req, const std::s
 
     }
     catch (std::runtime_error& e) {
-        json res_json = {
+        ordered_json res_json = {
             {"status", 400},
             {"message", e.what()}
         };
@@ -202,7 +203,7 @@ crow::response JobController::_resume_job(const crow::request &req, const std::s
         return res;
     }
     catch (std::exception& e) {
-        json res_json = {
+        ordered_json res_json = {
             {"status", 500},
             {"message", e.what()}
         };
@@ -216,7 +217,7 @@ crow::response JobController::_delete_job(const crow::request &req, const std::s
 
     try {
         _service->delete_job(id);
-        json res_json;
+        ordered_json res_json;
         res_json["id"] = id;
         res_json["message"] = "Job deleted successfully";
 
@@ -225,7 +226,7 @@ crow::response JobController::_delete_job(const crow::request &req, const std::s
         return res;
     }
     catch (JobNotFoundException& e) {
-        json res_json = {
+        ordered_json res_json = {
             {"status", 404},
             {"message", e.what()}
         };
@@ -235,7 +236,7 @@ crow::response JobController::_delete_job(const crow::request &req, const std::s
 
     }
     catch (std::runtime_error& e) {
-        json res_json = {
+        ordered_json res_json = {
             {"status", 400},
             {"message", e.what()}
         };
@@ -244,7 +245,7 @@ crow::response JobController::_delete_job(const crow::request &req, const std::s
         return res;
     }
     catch (std::exception& e) {
-        json res_json = {
+        ordered_json res_json = {
             {"status", 500},
             {"message", e.what()}
         };
@@ -259,13 +260,13 @@ crow::response JobController::_get_job_by_id(const std::string& id) {
     try {
         JobData result = _service->get_job_by_id(id);
 
-        json res_json;
+        ordered_json res_json;
         res_json["id"] = result._id;
         res_json["name"] = result._name;
         res_json["type"] = schedule_type_to_string(result._type);
         res_json["status"] = job_status_to_string(result._status);
-        res_json["command"] = result._command;
         res_json["next_run"] = result._next_run.time_since_epoch().count();
+        res_json["command"] = result._command;
         res_json["schedule_payload"] = json::parse(result._schedule_payload);
 
         crow::response res(200, res_json.dump());
@@ -273,7 +274,7 @@ crow::response JobController::_get_job_by_id(const std::string& id) {
         return res;
     }
     catch (JobNotFoundException& e) {
-        json res_json = {
+        ordered_json res_json = {
             {"status", 404},
             {"message", e.what()}
         };
@@ -282,7 +283,7 @@ crow::response JobController::_get_job_by_id(const std::string& id) {
         return res;
     }
     catch (std::runtime_error& e) {
-        json res_json = {
+        ordered_json res_json = {
             {"status", 400},
             {"message", e.what()}
         };
@@ -291,7 +292,7 @@ crow::response JobController::_get_job_by_id(const std::string& id) {
         return res;
     }
     catch (std::exception& e) {
-        json res_json = {
+        ordered_json res_json = {
             {"status", 500},
             {"message", e.what()}
         };
@@ -305,16 +306,16 @@ crow::response JobController::_list_jobs() {
     try {
         std::vector<JobData> jobs = _service->get_all_jobs();
 
-        json res_json = json::array();
+        ordered_json res_json = ordered_json::array();
 
         for (const auto& job : jobs) {
-            res_json.push_back({
+            res_json.push_back(ordered_json{
                 {"id", job._id},
                 {"name", job._name},
                 {"type", schedule_type_to_string(job._type)},
                 {"status", job_status_to_string(job._status)},
-                {"command", job._command},
                 {"next_run", job._next_run.time_since_epoch().count()},
+                {"command", job._command},
                 {"schedule_payload", json::parse(job._schedule_payload)}
             });
         }
@@ -324,7 +325,7 @@ crow::response JobController::_list_jobs() {
         return res;
     }
     catch (std::runtime_error& e) {
-        json res_json = {
+        ordered_json res_json = {
             {"status", 400},
             {"message", e.what()}
         };
@@ -333,7 +334,7 @@ crow::response JobController::_list_jobs() {
         return res;
     }
     catch (std::exception& e) {
-        json res_json = {
+        ordered_json res_json = {
             {"status", 500},
             {"message", e.what()}
         };
