@@ -41,7 +41,7 @@ On Windows, `ws2_32` and `mswsock` are linked for Asio's socket layer.
 
 ```bash
 cmake -S . -B build
-cmake --build build
+cmake --build build --config Release
 ```
 
 Run (creates/opens the SQLite database `job.db3` in the working directory):
