@@ -1,4 +1,6 @@
 #include "scheduler/ThreadPool.h"
+
+#include <iostream>
 #include <boost/process.hpp>
 #include "exceptions/JobExecutionException.h"
 
@@ -48,3 +50,45 @@ void ThreadPool::_worker_loop() {
     }
 }
 
+void ThreadPool::_execute(std::shared_ptr<Job> job) {
+    const std::string id = job->get_id();
+    try {
+        _service->update_status(id, JobStatus::RUNNING);
+
+        boost::process::child process(job->get_command());
+        process.wait();
+
+        const int exit_code = process.exit_code();
+
+        if (exit_code != 0) {
+            throw JobExecutionException(id,
+                "process exited with code " + std::to_string(exit_code));
+        }
+
+        //success path
+        if (job->get_schedule_type() == ScheduleType::ONETIME) {
+            _service->update_status(id, JobStatus::COMPLETED);
+        } else {
+            // this set the status to active and recalculate the next next run and add to the daemon
+            _service->reschedule_job(id);
+        }
+    }
+    catch (const JobExecutionException& e) {
+        try {
+            _service->update_status(id, JobStatus::FAILED);
+        }
+        catch (const std::exception& inner) {
+            std::cerr << "Failed to mark job FAILED: " << inner.what() << "\n";
+        }
+    }
+    catch (const std::exception& e) {
+        // boost::process threw (command not found, permission denied, etc.)
+        // or the db threw on the initial RUNNING update
+        try {
+            _service->update_status(id, JobStatus::FAILED);
+        }
+        catch (const std::exception& inner) {
+            std::cerr << "Failed to mark job FAILED: " << inner.what() << "\n";
+        }
+    }
+}
