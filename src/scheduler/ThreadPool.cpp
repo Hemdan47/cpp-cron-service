@@ -28,4 +28,20 @@ void ThreadPool::enqueue(std::shared_ptr<Job> task) {
     _cv.notify_one();
 }
 
+void ThreadPool::_worker_loop() {
+    while (!_stop_signal) {
+        std::unique_lock<std::mutex> lock(_mutex);
 
+        _cv.wait(lock, [this] {
+            return !_tasks.empty() || _stop_signal;
+        });
+
+        if (_stop_signal && _tasks.empty()) return;
+
+        auto job = _tasks.front();
+        _tasks.pop();
+        lock.unlock();
+
+        _execute(job);
+    }
+}
