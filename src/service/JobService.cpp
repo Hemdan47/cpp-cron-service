@@ -27,7 +27,7 @@ JobData JobService::create_job(JobData data) {
 JobData JobService::pause_job(const std::string& id) {
     std::optional<JobData> data = _repo->find_by_id(id);
     if (!data.has_value()) {
-        throw std::invalid_argument("invalid job id");
+        throw JobNotFoundException("invalid job id");
     }
 
     data.value()._status = JobStatus::PAUSED;
@@ -39,7 +39,7 @@ JobData JobService::pause_job(const std::string& id) {
 JobData JobService::resume_job(const std::string& id) {
     std::optional<JobData> data = _repo->find_by_id(id);
     if (!data.has_value()) {
-        throw std::invalid_argument("invalid job id");
+        throw JobNotFoundException("invalid job id");
     }
 
     data.value()._status = JobStatus::ACTIVE;
@@ -81,7 +81,7 @@ JobData JobService::reschedule_job(const std::string& id) {
 void JobService::delete_job(const std::string& id) {
     const int count = _repo->delete_job(id);
     if (!count) {
-        throw std::invalid_argument("invalid job id");
+        throw JobNotFoundException("invalid job id");
     }
 
     _daemon->remove_job(id);
