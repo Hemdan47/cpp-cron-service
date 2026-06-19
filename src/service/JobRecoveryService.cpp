@@ -18,10 +18,10 @@ void JobRecoveryService::execute() {
         const auto stored_next_run= job->get_next_run();
 
         if (stored_next_run < now) {
-            // one time job — time has passed, mark as completed and skip
+            // one time job — time has passed, mark as failed and skip
             if (job->get_schedule_type() == ScheduleType::ONETIME) {
-                dto._status = JobStatus::COMPLETED;
-                job->set_status(JobStatus::COMPLETED);
+                dto._status = JobStatus::FAILED;
+                job->set_status(JobStatus::FAILED);
                 _repo->update_job(dto);
                 continue;
             }

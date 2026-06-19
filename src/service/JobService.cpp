@@ -1,5 +1,6 @@
 #include "service/JobService.h"
 #include "exceptions/JobNotFoundException.h"
+#include "exceptions/InvalidScheduleException.h"
 #include "utils/IdGenerator.h"
 
 
@@ -17,6 +18,14 @@ JobData JobService::create_job(JobData data) {
     const std::shared_ptr<Job> job = _factory->create_job(data);
     job->calculate_next_run();
     data._next_run = job->get_next_run();
+
+    if (data._type == ScheduleType::ONETIME) {
+        const auto now = std::chrono::floor<std::chrono::seconds>(
+            std::chrono::system_clock::now());
+        if (data._next_run < now) {
+            throw InvalidScheduleException("Cannot schedule a one-time job in the past");
+        }
+    }
 
     JobData saved_job = _repo->save_job(data);
     _daemon->add_job(job);
