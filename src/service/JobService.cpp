@@ -51,6 +51,32 @@ JobData JobService::resume_job(const std::string& id) {
     return _repo->update_job(data.value());
 }
 
+JobData JobService::update_status(const std::string& id, JobStatus status) {
+    std::optional<JobData> data = _repo->find_by_id(id);
+    if (!data.has_value()) {
+        throw JobNotFoundException("invalid job id");
+    }
+    data.value()._status = status;
+    return _repo->update_job(data.value());
+}
+
+JobData JobService::reschedule_job(const std::string& id) {
+    std::optional<JobData> data = _repo->find_by_id(id);
+    if (!data.has_value()) {
+        throw JobNotFoundException(id);
+    }
+
+    data.value()._status = JobStatus::ACTIVE;
+    const std::shared_ptr<Job> job = _factory->create_job(data.value());
+    job->calculate_next_run();
+    data.value()._next_run = job->get_next_run();
+
+    JobData updated = _repo->update_job(data.value());
+    _daemon->add_job(job);
+    return updated;
+}
+
+
 void JobService::delete_job(const std::string& id) {
     const int count = _repo->delete_job(id);
     if (!count) {
