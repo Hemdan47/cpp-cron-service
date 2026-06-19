@@ -15,3 +15,10 @@ void SchedulerDaemon::stop() {
     }
 }
 
+void SchedulerDaemon::add_job(std::shared_ptr<Job> job) {
+    std::lock_guard<std::mutex> lock(_mutex);
+    _queue.push(job);
+    _active_jobs.insert(job->get_id());
+    _cv.notify_one();
+}
+
