@@ -13,6 +13,7 @@ public:
 
     void enqueue(std::shared_ptr<Job> job);
     void stop();
+    void set_service(std::shared_ptr<JobService> service);
 
 private:
     void _worker_loop();

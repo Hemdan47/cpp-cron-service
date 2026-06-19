@@ -21,13 +21,13 @@ void JobController::_register_routes(std::shared_ptr<crow::SimpleApp> app) {
     });
 
     //pause a job
-    CROW_ROUTE((*_app), "/api/jobs/<string>").methods(crow::HTTPMethod::PATCH)
+    CROW_ROUTE((*_app), "/api/jobs/<string>/pause").methods(crow::HTTPMethod::PATCH)
     ([this](const crow::request& req , const std::string& id) {
         return _pause_job(req, id);
     });
 
     //resume a job
-    CROW_ROUTE((*_app), "/api/jobs/<string>").methods(crow::HTTPMethod::PATCH)
+    CROW_ROUTE((*_app), "/api/jobs/<string>/resume").methods(crow::HTTPMethod::PATCH)
     ([this](const crow::request& req , const std::string& id) {
         return _resume_job(req, id);
     });

@@ -1,5 +1,6 @@
 #include "service/JobService.h"
 #include "exceptions/JobNotFoundException.h"
+#include "utils/IdGenerator.h"
 
 
 JobService::JobService(
@@ -10,7 +11,7 @@ JobService::JobService(
 
 
 JobData JobService::create_job(JobData data) {
-    const std::string id = "id"; // leave a temp value for now later implement a uuid utility function
+    const std::string id = generate_id();
     data._id = id;
     data._status = JobStatus::ACTIVE;
     const std::shared_ptr<Job> job = _factory->create_job(data);

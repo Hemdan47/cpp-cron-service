@@ -16,6 +16,11 @@ ThreadPool::~ThreadPool() {
     stop();
 }
 
+void ThreadPool::set_service(std::shared_ptr<JobService> service) {
+    this->_service = std::move(service);
+}
+
+
 void ThreadPool::stop() {
     _stop_signal = true;
     _cv.notify_all();

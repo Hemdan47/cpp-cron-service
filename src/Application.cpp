@@ -1,20 +1,27 @@
 #include "Application.h"
 #include "repository/SQliteRepository.h"
+#include "service/JobRecoveryService.h"
 
 
 Application::Application() {
     this->_repository = std::make_shared<SQliteRepository>();
-    // this->_factory = std::make_shared<JobFactory>();
-    // this->_daemon = std::make_shared<SchedulerDaemon>(_repo);
-    // this->_service = std::make_shared<JobService>(repo, factory, daemon);
-    // this->_controller = std::make_shared<JobController>(service);
+    this->_factory = std::make_shared<JobFactory>();
+    this->_thread_pool = std::make_shared<ThreadPool>();
+    this->_daemon = std::make_shared<SchedulerDaemon>(_thread_pool);
+    this->_service = std::make_shared<JobService>(_repository, _factory, _daemon);
+    this->_recovery_service = std::make_unique<JobRecoveryService>(_repository, _factory, _daemon);
+    this->_thread_pool->set_service(_service);
+    this->_crow = std::make_shared<crow::SimpleApp>();
+    this->_controller = std::make_shared<JobController>(_service , _crow);
+
 }
 
 void Application::run() {
+    this->_recovery_service->execute();
+    this->_daemon->start();
 
-    // JobRecoveryService recovery_manager(_repo, _factory, _daemon);
-    // recovery_manager.execute();
-    // _controller->registerRoutes(_crow);
-    // _daemon->start();
-    // _crow->port(8080).multithreaded().run();
+    this->_crow->port(8080).multithreaded().run();
+
+    this->_daemon->stop();
+    this->_thread_pool->stop();
 }
