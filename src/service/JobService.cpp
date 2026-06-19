@@ -51,6 +51,15 @@ JobData JobService::resume_job(const std::string& id) {
     return _repo->update_job(data.value());
 }
 
+JobData JobService::update_status(const std::string& id, JobStatus status) {
+    std::optional<JobData> data = _repo->find_by_id(id);
+    if (!data.has_value()) {
+        throw JobNotFoundException("invalid job id");
+    }
+    data.value()._status = status;
+    return _repo->update_job(data.value());
+}
+
 void JobService::delete_job(const std::string& id) {
     const int count = _repo->delete_job(id);
     if (!count) {

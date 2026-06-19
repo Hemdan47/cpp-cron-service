@@ -3,6 +3,7 @@
 #include <mutex>
 #include <queue>
 #include "domain/Job.h"
+#include "service/JobService.h"
 
 class ThreadPool {
 public:
@@ -14,10 +15,12 @@ public:
 
 private:
     void _worker_loop();
+    void _execute(std::shared_ptr<Job> job);
 
     std::vector<std::thread> _workers;
     std::queue<std::shared_ptr<Job>> _tasks;
     std::mutex _mutex;
     std::condition_variable _cv;
     std::atomic<bool> _stop_signal;
+    std::shared_ptr<JobService> _service;
 };

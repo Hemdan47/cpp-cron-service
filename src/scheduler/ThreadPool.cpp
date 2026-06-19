@@ -1,4 +1,6 @@
 #include "scheduler/ThreadPool.h"
+#include <boost/process.hpp>
+#include "exceptions/JobExecutionException.h"
 
 
 ThreadPool::ThreadPool(const size_t num_threads) {
@@ -45,3 +47,4 @@ void ThreadPool::_worker_loop() {
         _execute(job);
     }
 }
+

@@ -18,6 +18,7 @@ public:
     JobData create_job(JobData data);
     JobData pause_job(const std::string& id);
     JobData resume_job(const std::string& id);
+    JobData update_status(const std::string& id, JobStatus status);
     void delete_job(const std::string& id);
     std::vector<JobData> get_all_jobs();
     JobData get_job_by_id(const std::string& id);
