@@ -9,7 +9,7 @@
 class SchedulerDaemon {
 public:
     explicit SchedulerDaemon(std::shared_ptr<ThreadPool> _thread_pool);
-    ~SchedulerDaemon() = default;
+    ~SchedulerDaemon();
 
     void add_job(std::shared_ptr<Job> job);
     void remove_job(const std::string& id);

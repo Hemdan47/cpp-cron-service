@@ -3,6 +3,11 @@
 SchedulerDaemon::SchedulerDaemon(std::shared_ptr<ThreadPool> thread_pool)
     : _thread_pool(std::move(thread_pool)), _stop_signal(false){}
 
+SchedulerDaemon::~SchedulerDaemon() {
+    stop();
+}
+
+
 void SchedulerDaemon::start() {
     _thread = std::thread(&SchedulerDaemon::run, this);
 }
